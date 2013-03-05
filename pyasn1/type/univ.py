@@ -243,13 +243,17 @@ class BitString(base.AbstractSimpleAsn1Item):
                     r[j] = 1
                 return tuple(r)
         elif isinstance(value, (tuple, list)):
-            r = tuple(value)
-            for b in r:
-                if b and b != 1:
-                    raise error.PyAsn1Error(
-                        'Non-binary BitString initializer \'%s\'' % (r,)
-                        )
-            return r
+            # removed check; it's horribly slow: -- Dave Baggett (Arcode Corporation)
+            if True:
+                return tuple(value)
+            else:
+                r = tuple(value)
+                for b in r:
+                    if b and b != 1:
+                        raise error.PyAsn1Error(
+                            'Non-binary BitString initializer \'%s\'' % (r,)
+                            )
+                return r
         elif isinstance(value, BitString):
             return tuple(value)
         else:

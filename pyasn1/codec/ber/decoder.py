@@ -4,6 +4,12 @@ from pyasn1.codec.ber import eoo
 from pyasn1.compat.octets import oct2int, octs2ints, isOctetsType
 from pyasn1 import debug, error
 
+try:
+    # See if we have a table to speed up bit pattern decoding
+    from bitpattern import BITPATTERN
+except ImportError:
+    bitpattern = None
+
 class AbstractDecoder:
     protoComponent = None
     def valueDecoder(self, fullSubstrate, substrate, asn1Spec, tagSet,
@@ -120,16 +126,25 @@ class BitStringDecoder(AbstractSimpleDecoder):
                     'Trailing bits overflow %s' % trailingBits
                     )
             head = head[1:]
-            lsb = p = 0; l = len(head)-1; b = ()
-            while p <= l:
-                if p == l:
-                    lsb = trailingBits
-                j = 7                    
-                o = oct2int(head[p])
-                while j >= lsb:
-                    b = b + ((o>>j)&0x01,)
-                    j = j - 1
-                p = p + 1
+            if BITPATTERN:
+                # Use faster method with lookup table
+                p = 0; l = len(head)-1; b = []
+                while p < l:
+                    b.extend(BITS[oct2int(head[p])])
+                    p += 1
+                b.extend(BITS[oct2int(head[p])][0:8-trailingBits])
+            else:
+                # Use original, slower method
+                lsb = p = 0; l = len(head)-1; b = ()
+                while p <= l:
+                    if p == l:
+                        lsb = trailingBits
+                    j = 7                    
+                    o = oct2int(head[p])
+                    while j >= lsb:
+                        b = b + ((o>>j)&0x01,)
+                        j = j - 1
+                    p = p + 1
             return self._createComponent(asn1Spec, tagSet, b), tail
         r = self._createComponent(asn1Spec, tagSet, ())
         if substrateFun:
