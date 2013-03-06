@@ -130,9 +130,9 @@ class BitStringDecoder(AbstractSimpleDecoder):
                 # Use faster method with lookup table
                 p = 0; l = len(head)-1; b = []
                 while p < l:
-                    b.extend(BITS[oct2int(head[p])])
+                    b.extend(BITPATTERN[oct2int(head[p])])
                     p += 1
-                b.extend(BITS[oct2int(head[p])][0:8-trailingBits])
+                b.extend(BITPATTERN[oct2int(head[p])][0:8-trailingBits])
             else:
                 # Use original, slower method
                 lsb = p = 0; l = len(head)-1; b = ()
