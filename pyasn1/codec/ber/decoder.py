@@ -6,7 +6,7 @@ from pyasn1 import debug, error
 
 try:
     # See if we have a table to speed up bit pattern decoding
-    from bitpattern import BITPATTERN
+    from pyasn1.codec.bitpattern import BITPATTERN
 except ImportError:
     bitpattern = None
 
