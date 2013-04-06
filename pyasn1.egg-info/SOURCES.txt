@@ -4,6 +4,7 @@ MANIFEST.in
 README
 THANKS
 TODO
+setup.cfg
 setup.py
 doc/codecs.html
 doc/constraints.html
@@ -21,6 +22,7 @@ pyasn1.egg-info/dependency_links.txt
 pyasn1.egg-info/top_level.txt
 pyasn1.egg-info/zip-safe
 pyasn1/codec/__init__.py
+pyasn1/codec/bitpattern.py
 pyasn1/codec/ber/__init__.py
 pyasn1/codec/ber/decoder.py
 pyasn1/codec/ber/encoder.py
